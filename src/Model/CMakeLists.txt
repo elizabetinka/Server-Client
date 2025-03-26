@@ -1,0 +1,12 @@
+add_library(DataLayer
+       Client.h
+        Item.h
+        Client.cpp
+        Item.cpp
+        Repository/ClientRepository.h
+        Repository/Repository.h
+        Repository/ClientRepository.cpp
+        Repository/ItemRepository.cpp
+        Repository/ItemRepository.h
+        ModelDefs.h
+)
