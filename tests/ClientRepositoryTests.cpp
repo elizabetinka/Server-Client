@@ -57,6 +57,7 @@ INSTANTIATE_TEST_SUITE_P(
         ));
 
 TEST_P(ClientRepositoryTestsInvalid, ClientRepositoryTestsInvalidTest) {
+    addClients();
     auto client = GetParam();
     client.id = 0;
     auto responce = clientRepository.Add(client);
