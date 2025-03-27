@@ -18,6 +18,7 @@ add_executable(
         ClientServiceTests.cpp
         ItemServiceTests.cpp
         ClientRepositoryTests.cpp
+        ItemRepositoryTests.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
