@@ -9,11 +9,11 @@ add_executable(${PROJECT_NAME} main.cpp)
 add_subdirectory(src/Model)
 add_subdirectory(src/Utils)
 add_subdirectory(src/Service)
-add_subdirectory(src/View)
+add_subdirectory(src/ViewConsole)
 
 enable_testing()
 add_subdirectory(tests)
 
 target_link_libraries(${PROJECT_NAME}
-        PresentationLayer
+        PresentationLayerConsole
 )
