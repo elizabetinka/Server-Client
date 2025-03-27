@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
-project(PresentationLayer)
+project(PresentationLayerServer)
 
 add_library(${PROJECT_NAME}
-        ConsoleView.h
-        ConsoleView.cpp
-        View.h
+        Server.cpp
+        Server.h
 )
 
 include(FetchContent)
@@ -25,7 +24,7 @@ target_include_directories(${PROJECT_NAME}
         ${Boost_SOURCE_DIRS}
 )
 
-target_link_libraries(${PROJECT_NAME} BusinessLayer Boost::system Boost::program_options)
+target_link_libraries(${PROJECT_NAME} BusinessLayer Boost::system Boost::program_options Boost::asio ws2_32)
 
 #target_link_libraries(${PROJECT_NAME}
 #        PRIVATE
