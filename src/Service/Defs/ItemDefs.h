@@ -107,18 +107,38 @@ struct GetAllItemRes : Response
 
 struct ItemDeleteAllReq
 {
-
+    uint64_t requestId;
 };
 
 
 struct ItemDeleteAllRes: Response
 {
+    uint64_t responceId;
     uint64_t deleted;
 
     std::string getResultStr() const override{
         return std::format("delete {} items \n", deleted);
     }
 
-    ItemDeleteAllRes(uint64_t deleted2) : deleted(deleted2){}
+    ItemDeleteAllRes(uint64_t responceId2,uint64_t deleted2) : responceId(responceId2),deleted(deleted2){}
 };
 
+
+struct ItemModifyReq
+{
+    uint64_t requestId;
+    ItemInfo new_item;
+};
+
+
+struct ItemModifyRes : Response
+{
+    uint64_t responceId;
+    bool success;
+
+    std::string getResultStr() const override{
+        return std::format("modify item was {} \n", success);
+    }
+
+    ItemModifyRes(uint64_t responceId2, uint64_t success2) : responceId(responceId2),success(success2){}
+};

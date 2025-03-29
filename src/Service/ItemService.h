@@ -11,6 +11,7 @@
 class ItemService {
 public:
     AddItemRes process(AddItemReq const&);
+    ItemModifyRes process(ItemModifyReq const&);
     DeleteItemRes process(DeleteItemReq const&);
     GetAllItemRes process(GetAllItemReq const&);
     ItemDeleteAllRes process(ItemDeleteAllReq const&);

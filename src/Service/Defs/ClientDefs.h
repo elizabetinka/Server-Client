@@ -62,6 +62,7 @@ struct ClientDto {
     std::string birthday;
 
     explicit ClientDto(const Client& client) : id(client.id),nickname(client.nickname),birthday(timeToString(client.birthday, kTimeFormat)) {}
+    ClientDto() = default;
 
 };
 
@@ -99,17 +100,37 @@ struct ClientGetALlRes : Response
 
 struct ClientDeleteAllReq
 {
-
+    uint64_t requestId;
 };
 
 
 struct ClientDeleteAllRes : Response
 {
+    uint64_t responceId;
     uint64_t deleted;
 
     std::string getResultStr() const override{
         return std::format("delete {} clients \n", deleted);
     }
 
-    ClientDeleteAllRes(uint64_t deleted2) : deleted(deleted2){}
+    ClientDeleteAllRes(uint64_t responceId2, uint64_t deleted2) : responceId(responceId2),deleted(deleted2){}
+};
+
+struct ClientModifyReq
+{
+    uint64_t requestId;
+    ClientDto new_client;
+};
+
+
+struct ClientModifyRes : Response
+{
+    uint64_t responceId;
+    bool success;
+
+    std::string getResultStr() const override{
+        return std::format("modify client was {} \n", success);
+    }
+
+    ClientModifyRes(uint64_t responceId2, uint64_t success2) : responceId(responceId2),success(success2){}
 };

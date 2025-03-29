@@ -34,5 +34,19 @@ ClientDeleteRes ClientService::process(ClientDeleteReq const& req){
 }
 
 ClientDeleteAllRes ClientService::process(const ClientDeleteAllReq & req) {
-    return clientRepository.DeleteAll();
+    return {req.requestId, clientRepository.DeleteAll()};
+}
+
+ClientModifyRes ClientService::process(const ClientModifyReq & req) {
+    if (isEmptyOrOnlySpaceString(req.new_client.birthday) || isEmptyOrOnlySpaceString(req.new_client.nickname)){
+        return {req.requestId,  false};
+    }
+
+    auto timePair = stringToTime(req.new_client.birthday,kTimeFormat);
+    if (!timePair.first){
+        return {req.requestId,  false};
+    }
+    Client client= Client(req.new_client.nickname, timePair.second);
+    client.id = req.new_client.id;
+    return {req.requestId,clientRepository.Modify(client)};
 }

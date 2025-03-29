@@ -45,5 +45,9 @@ GetAllItemRes ItemService::process(GetAllItemReq const& req){
 }
 
 ItemDeleteAllRes ItemService::process(const ItemDeleteAllReq & req) {
-    return itemRepository.DeleteAll();
+    return {req.requestId, itemRepository.DeleteAll()};
+}
+
+ItemModifyRes ItemService::process(const ItemModifyReq & req) {
+    return {req.requestId,itemRepository.Modify(req.new_item)};
 }
