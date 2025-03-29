@@ -13,6 +13,7 @@
 class ClientService {
 public:
     ClientRegistrRes process(ClientRegistrReq const&);
+    ClientModifyRes process(ClientModifyReq const&);
     ClientGetALlRes process(ClientGetALlReq const&);
     ClientDeleteRes process(ClientDeleteReq const&);
     ClientDeleteAllRes process(ClientDeleteAllReq const&);

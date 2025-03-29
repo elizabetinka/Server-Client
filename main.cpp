@@ -4,27 +4,60 @@
 
 #include "src/ViewConsole/ConsoleView.h"
 #include <boost/asio.hpp>
+#include <boost/system.hpp>
 #include <iostream>
+#include <memory>
+
+#include <boost/asio.hpp>
+#include <iostream>
+#include <optional>
+#include "src/HttpServer/HttpServer.h"
+
+
 
 int main() {
-    std::setlocale(LC_ALL, "ru_RU.UTF-8");
-    std::uint16_t port = 1500;
+    try {
+        const ip::tcp address = ip::tcp::v4();
+        unsigned short port = 8080;
 
-    boost::asio::io_context io_context;
-    boost::asio::ip::udp::endpoint receiver(boost::asio::ip::udp::v4(), port);
-    boost::asio::ip::udp::socket socket(io_context, receiver);
+        HttpServer server = HttpServer(4);
+        server.run(address,port);
 
-    while (true) {
-        char buffer[65536];
-        boost::asio::ip::udp::endpoint sender;
-        std::size_t bytes_transferred =
-                socket.receive_from(boost::asio::buffer(buffer), sender);
-        std::cout<<"recieve and send: "<<"bytes count: "<<bytes_transferred<<" value: "<<buffer<<std::endl;
-        socket.send_to(boost::asio::buffer(buffer, bytes_transferred), sender);
+    } catch (const std::exception& e) {
+        std::cerr << "Ошибка: " << e.what() << std::endl;
     }
-
     return 0;
 }
+
+//
+//int main() {
+//    std::setlocale(LC_ALL, "ru_RU.UTF-8");
+//    std::uint16_t port = 1500;
+//
+//    boost::asio::io_context io_context;
+//    boost::asio::ip::udp::endpoint receiver(boost::asio::ip::udp::v4(), port);
+//    boost::asio::ip::udp::socket socket(io_context, receiver);
+//
+//    while (true) {
+//        char buffer[65536];
+//        boost::asio::ip::udp::endpoint sender;
+//        std::size_t bytes_transferred =
+//                socket.receive_from(boost::asio::buffer(buffer), sender);
+//        socket.async_receive_from(
+//                buffer,
+//                sender,
+//                [&buffer,socket,sender](boost::system::error_code error, std::size_t bytes_transferred) {
+//                    // Эта лямбда-функция будет вызвана после получения сообщения
+//                    std::cout << "Message is received, message size is "
+//                              << bytes_transferred;
+//                    socket.send_to(boost::asio::buffer(buffer, bytes_transferred), sender);
+//                });
+////        std::cout<<"recieve and send: "<<"bytes count: "<<bytes_transferred<<" value: "<<buffer<<std::endl;
+////        socket.send_to(boost::asio::buffer(buffer, bytes_transferred), sender);
+//    }
+//
+//    return 0;
+//}
 
 //int main() {
 //
