@@ -30,8 +30,10 @@ target_include_directories(${PROJECT_NAME}
         ${Boost_SOURCE_DIRS}
 )
 
-target_link_libraries(${PROJECT_NAME} BusinessLayer Boost::system Boost::program_options Boost::asio  Boost::beast ws2_32 wsock32 nlohmann_json::nlohmann_json)
-
+target_link_libraries(${PROJECT_NAME} BusinessLayer Boost::system Boost::program_options Boost::asio  Boost::beast nlohmann_json::nlohmann_json)
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME}  ws2_32 wsock32 )
+endif ()
 #target_link_libraries(${PROJECT_NAME}
 #        PRIVATE
 #        BusinessLayer

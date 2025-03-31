@@ -21,11 +21,14 @@ class HttpServer {
     int threadCount = 4;
     boost::asio::thread_pool tp;
     Controller controller;
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard;
 
 public:
     HttpServer(int threadCount=4);
+    HttpServer(Controller controller, int threadCount=4);
 
     void run(const boost::asio::ip::tcp& address, uint16_t port);
+    void stop();
 private:
 
     http::response<http::string_body> getResponce(std::shared_ptr<http::request<http::string_body>> const& req);
@@ -52,4 +55,3 @@ private:
             boost::beast::error_code ec,
             std::size_t bytes_transferred);
 };
-

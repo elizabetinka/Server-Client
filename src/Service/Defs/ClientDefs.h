@@ -62,6 +62,10 @@ struct ClientDto {
     std::string birthday;
 
     explicit ClientDto(const Client& client) : id(client.id),nickname(client.nickname),birthday(timeToString(client.birthday, kTimeFormat)) {}
+
+    ClientDto(uint64_t id, const std::string &nickname, const std::string &birthday) : id(id), nickname(nickname),
+                                                                                       birthday(birthday) {}
+
     ClientDto() = default;
 
 };

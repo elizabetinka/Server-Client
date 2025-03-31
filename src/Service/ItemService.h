@@ -7,18 +7,23 @@
 #include "../Model/Item.h"
 #include "Defs/ItemDefs.h"
 #include "../Model/Repository/ItemRepository.h"
+#include "IItemService.h"
+#include <memory>
 
-class ItemService {
+class ItemService : public IItemService {
 public:
-    AddItemRes process(AddItemReq const&);
-    ItemModifyRes process(ItemModifyReq const&);
-    DeleteItemRes process(DeleteItemReq const&);
-    GetAllItemRes process(GetAllItemReq const&);
-    ItemDeleteAllRes process(ItemDeleteAllReq const&);
+    explicit ItemService( std::shared_ptr<Repository<ItemInfo>> itemRepository2);
+    ItemService() = default;
+
+    AddItemRes process(AddItemReq const&) override;
+    ItemModifyRes process(ItemModifyReq const&) override;
+    DeleteItemRes process(DeleteItemReq const&) override;
+    GetAllItemRes process(GetAllItemReq const&) override;
+    ItemDeleteAllRes process(ItemDeleteAllReq const&) override;
 
 private:
     static uint64_t last_id;
-    ItemRepository itemRepository;
+    std::shared_ptr<Repository<ItemInfo>> itemRepository = std::make_shared<ItemRepository>();
     //std::unordered_map<uint64_t,ItemInfo> items;
 };
 

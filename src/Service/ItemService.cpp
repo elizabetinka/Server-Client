@@ -11,7 +11,7 @@ AddItemRes ItemService::process(AddItemReq const& req){
     }
 
     auto item = Item(req.name, req.description, req.category);
-    bool success = itemRepository.Add(ItemInfo(item, req.count));
+    bool success = itemRepository->Add(ItemInfo(item, req.count));
     return {req.requestId,  success};
 }
 
@@ -20,7 +20,7 @@ DeleteItemRes ItemService::process(DeleteItemReq const& req){
         return {req.requestId,false};
     }
 
-    auto itemPair = itemRepository.getById(req.itemId);
+    auto itemPair = itemRepository->getById(req.itemId);
     if (!itemPair.first){
         return {req.requestId,false};
     }
@@ -31,23 +31,29 @@ DeleteItemRes ItemService::process(DeleteItemReq const& req){
     bool success = false;
 
     if (itemPair.second.count==0){
-        success = itemRepository.Delete(req.itemId);
+        success = itemRepository->Delete(req.itemId);
     }
     else{
-        success = itemRepository.Modify(itemPair.second);
+        success = itemRepository->Modify(itemPair.second);
     }
 
 //    clients_count--;
     return {req.requestId, success, itemPair.second.item, deleted};
 }
 GetAllItemRes ItemService::process(GetAllItemReq const& req){
-    return {req.requestId, itemRepository.getAll()};
+    return {req.requestId, itemRepository->getAll()};
 }
 
 ItemDeleteAllRes ItemService::process(const ItemDeleteAllReq & req) {
-    return {req.requestId, itemRepository.DeleteAll()};
+    return {req.requestId, itemRepository->DeleteAll()};
 }
 
 ItemModifyRes ItemService::process(const ItemModifyReq & req) {
-    return {req.requestId,itemRepository.Modify(req.new_item)};
+    if (isEmptyOrOnlySpaceString(req.new_item.item.name) || req.new_item.count == 0){
+        return {req.requestId,  false};
+    }
+
+    return {req.requestId,itemRepository->Modify(req.new_item)};
 }
+
+ItemService::ItemService(std::shared_ptr<Repository<ItemInfo>> itemRepository2): itemRepository(std::move(itemRepository2)) {}

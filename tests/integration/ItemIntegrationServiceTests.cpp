@@ -3,9 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include "../src/Service/ItemService.h"
+#include "../../src/Service/ItemService.h"
 
-class ItemServiceTests : public testing::Test {
+class ItemIntegrationServiceTests : public testing::Test {
 
 protected:
     ItemService itemService;
@@ -18,32 +18,32 @@ protected:
     }
 
 public:
-    virtual ~ItemServiceTests() override {
+    virtual ~ItemIntegrationServiceTests() override {
         itemService.process(ItemDeleteAllReq{});
     }
 };
 
-class ServiceTestsItemServiceRequestId
-        : public ItemServiceTests, public ::testing::WithParamInterface<uint64_t>
+class ServiceIntegrationTestsItemServiceRequestId
+        : public ItemIntegrationServiceTests, public ::testing::WithParamInterface<uint64_t>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceRegistrationReqestId, ServiceTestsItemServiceRequestId,
+        ItemServiceIntegrationRegistrationReqestId, ServiceIntegrationTestsItemServiceRequestId,
         ::testing::Values(0,1,10,100,1000));
 
-TEST_P(ServiceTestsItemServiceRequestId, ItemServiceRegistrationReqestId) {
+TEST_P(ServiceIntegrationTestsItemServiceRequestId, ItemServiceIntegrationRegistrationReqestId) {
     auto const& id = GetParam();
     auto request = AddItemReq{.requestId = id, .name = "a", .description = "07-05-2004", .count = 5, .category = Category::beauty};
     auto responce = itemService.process(request);
     ASSERT_EQ(id,responce.responceId);
 }
 
-class ServiceTestsItemServiceRegistrationValid
-        : public  ItemServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string, uint64_t, Category>>
+class ServiceIntegrationTestsItemServiceRegistrationValid
+        : public  ItemIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string, uint64_t, Category>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceRegistrationValid, ServiceTestsItemServiceRegistrationValid,
+        ItemServiceIntegrationRegistrationValid, ServiceIntegrationTestsItemServiceRegistrationValid,
         ::testing::Values(
                 std::make_tuple("My name is Liza", "many words", 1, Category::beauty),
                 std::make_tuple("Liza", "desc", 10, Category::technic),
@@ -53,19 +53,19 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple("Makar", "04-05-1070", 10, Category::unknown))
                 );
 
-TEST_P(ServiceTestsItemServiceRegistrationValid, ItemServiceRegistrationValid) {
+TEST_P(ServiceIntegrationTestsItemServiceRegistrationValid, ItemServiceIntegrationRegistrationValid) {
     auto const& [name, desc, n, cat] = GetParam();
     auto request = AddItemReq{.requestId = 0, .name = name, .description = desc, .count = n, .category = cat};
     auto responce = itemService.process(request);
     ASSERT_EQ(responce.success, true);
 }
 
-class ServiceTestsItemServiceRegistrationInvalid
-        : public  ItemServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string, uint64_t, Category>>
+class ServiceIntegrationTestsItemServiceRegistrationInvalid
+        : public  ItemIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string, uint64_t, Category>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceRegistrationInvalid, ServiceTestsItemServiceRegistrationInvalid,
+        ItemServiceIntegrationRegistrationInvalid, ServiceIntegrationTestsItemServiceRegistrationInvalid,
         ::testing::Values(
                 std::make_tuple("", "many words", 1, Category::beauty),
                 std::make_tuple("   ", "07-05-2004", 10, Category::clothes),
@@ -73,7 +73,7 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple("Makar", "04-05-1070", 0, Category::unknown))
 );
 
-TEST_P(ServiceTestsItemServiceRegistrationInvalid, ItemServiceRegistrationInvalid) {
+TEST_P(ServiceIntegrationTestsItemServiceRegistrationInvalid, ItemServiceIntegrationRegistrationInvalid) {
     auto const& [name, desc, n, cat] = GetParam();
     auto request = AddItemReq{.requestId = 0, .name = name, .description = desc, .count = n, .category = cat};
     auto responce = itemService.process(request);
@@ -82,22 +82,22 @@ TEST_P(ServiceTestsItemServiceRegistrationInvalid, ItemServiceRegistrationInvali
 
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceDeleteReqestId, ServiceTestsItemServiceRequestId,
+        ItemServiceIntegrationDeleteReqestId, ServiceIntegrationTestsItemServiceRequestId,
         ::testing::Values(0,1,10,100,1000));
 
-TEST_P(ServiceTestsItemServiceRequestId, ItemServiceDeleteReqestId) {
+TEST_P(ServiceIntegrationTestsItemServiceRequestId, ItemServiceIntegrationDeleteReqestId) {
     auto const& id = GetParam();
     auto request = DeleteItemReq{.requestId = id, .itemId = 0, .count = 1};
     auto responce = itemService.process(request);
     ASSERT_EQ(id,responce.responceId);
 }
 
-class ServiceTestsItemServiceDeleteValid
-: public  ItemServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t>>
+class ServiceIntegrationTestsItemServiceDeleteValid
+: public  ItemIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceDeleteValid, ServiceTestsItemServiceDeleteValid,
+        ItemServiceIntegrationDeleteValid, ServiceIntegrationTestsItemServiceDeleteValid,
         ::testing::Values(
                 std::make_tuple(0,1),
                 std::make_tuple(1,1),
@@ -105,7 +105,7 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple(3,5)
                 ));
 
-TEST_P(ServiceTestsItemServiceDeleteValid, ItemServiceDeleteValid) {
+TEST_P(ServiceIntegrationTestsItemServiceDeleteValid, ItemServiceIntegrationDeleteValid) {
     addItems();
     auto const& [id,n] = GetParam();
     auto request = DeleteItemReq{.requestId = 0, .itemId = id, .count = n};
@@ -113,12 +113,12 @@ TEST_P(ServiceTestsItemServiceDeleteValid, ItemServiceDeleteValid) {
     ASSERT_EQ(responce.success, true);
 }
 
-class ServiceTestsItemServiceDeleteInvalid
-        : public  ItemServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t>>
+class ServiceIntegrationTestsItemServiceDeleteInvalid
+        : public  ItemIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceDeleteInvalid, ServiceTestsItemServiceDeleteInvalid,
+        ItemServiceIntegrationDeleteInvalid, ServiceIntegrationTestsItemServiceDeleteInvalid,
         ::testing::Values(
                 std::make_tuple(0,0),
                 std::make_tuple(4,1),
@@ -126,7 +126,7 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple(6,5)
         ));
 
-TEST_P(ServiceTestsItemServiceDeleteInvalid, ItemServiceDeleteInvalid) {
+TEST_P(ServiceIntegrationTestsItemServiceDeleteInvalid, ItemServiceIntegrationDeleteInvalid) {
     addItems();
     auto const& [id,n] = GetParam();
     auto request = DeleteItemReq{.requestId = 0, .itemId = id, .count = n};
@@ -134,12 +134,12 @@ TEST_P(ServiceTestsItemServiceDeleteInvalid, ItemServiceDeleteInvalid) {
     ASSERT_EQ(responce.success, false);
 }
 
-class ServiceTestsItemServiceDeleteChangeLenValid
-        : public  ItemServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t> >
+class ServiceIntegrationTestsItemServiceDeleteChangeLenValid
+        : public  ItemIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t> >
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceDeleteChangeLenValid, ServiceTestsItemServiceDeleteChangeLenValid,
+        ItemServiceIntegrationDeleteChangeLenValid, ServiceIntegrationTestsItemServiceDeleteChangeLenValid,
         ::testing::Values(
                 std::make_tuple(0,5),
                 std::make_tuple(1,5),
@@ -147,7 +147,7 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple(3,5)
         ));
 
-TEST_P(ServiceTestsItemServiceDeleteChangeLenValid, ItemServiceDeleteChangeLenValid) {
+TEST_P(ServiceIntegrationTestsItemServiceDeleteChangeLenValid, ItemServiceIntegrationDeleteChangeLenValid) {
     addItems();
     auto const& [id,n] = GetParam();
     auto n1 = itemService.process(GetAllItemReq{.requestId = 0}).items.size();
@@ -157,12 +157,12 @@ TEST_P(ServiceTestsItemServiceDeleteChangeLenValid, ItemServiceDeleteChangeLenVa
     ASSERT_EQ(n2, n1-1);
 }
 
-class ServiceTestsItemServiceDeleteChangeLenInvalid
-        : public  ItemServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t> >
+class ServiceIntegrationTestsItemServiceDeleteChangeLenInvalid
+        : public  ItemIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<uint64_t,uint64_t> >
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ItemServiceDeleteChangeLenInvalid, ServiceTestsItemServiceDeleteChangeLenInvalid,
+        ItemServiceIntegrationDeleteChangeLenInvalid, ServiceIntegrationTestsItemServiceDeleteChangeLenInvalid,
         ::testing::Values(
                 std::make_tuple(0,0),
                 std::make_tuple(0,1),
@@ -172,7 +172,7 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple(6,5)
         ));
 
-TEST_P(ServiceTestsItemServiceDeleteChangeLenInvalid, ItemServiceDeleteChangeLenInvalid) {
+TEST_P(ServiceIntegrationTestsItemServiceDeleteChangeLenInvalid, ItemServiceIntegrationDeleteChangeLenInvalid) {
     addItems();
     auto const& [id,n] = GetParam();
     auto n1 = itemService.process(GetAllItemReq{.requestId = 0}).items.size();
@@ -181,13 +181,13 @@ TEST_P(ServiceTestsItemServiceDeleteChangeLenInvalid, ItemServiceDeleteChangeLen
     ASSERT_EQ(n2, n1);
 }
 
-TEST_F( ItemServiceTests, GetAllTest) {
+TEST_F( ItemIntegrationServiceTests, GetAllTest) {
     addItems();
     auto n = itemService.process(GetAllItemReq{.requestId = 0}).items.size();
     ASSERT_EQ(n, 4);
 }
 
-TEST_F( ItemServiceTests, GetAllTestWithAdding) {
+TEST_F( ItemIntegrationServiceTests, GetAllTestWithAdding) {
     addItems();
     auto n1 = itemService.process(GetAllItemReq{.requestId = 0}).items.size();
     itemService.process(AddItemReq{.requestId = 0, .name = "a", .description = "07-05-2004", .count = 5, .category = Category::beauty});

@@ -8,7 +8,15 @@
 #include <nlohmann/json.hpp>
 
 
-HttpServer::HttpServer(int threadCount) : threadCount(threadCount),tp(threadCount) {}
+HttpServer::HttpServer(int threadCount) : threadCount(threadCount),tp(threadCount),io_context(threadCount), work_guard(boost::asio::make_work_guard(io_context)) {}
+HttpServer::HttpServer(Controller controller, int threadCount) : threadCount(threadCount),tp(threadCount),io_context(threadCount), work_guard(boost::asio::make_work_guard(io_context)),controller(controller) {}
+
+void HttpServer::stop() {
+    work_guard.reset();
+    io_context.stop();
+    //tp.join();
+    tp.stop();
+}
 
 void HttpServer::run(const boost::asio::ip::tcp& address, uint16_t port){
 
@@ -16,7 +24,7 @@ void HttpServer::run(const boost::asio::ip::tcp& address, uint16_t port){
 
     for (int i = 0; i < threadCount; ++i) {
         boost::asio::post(tp, [&io_context = this ->io_context](){
-            boost::asio::io_service::work w(io_context); // нужен для того, чтобы .run() не завершался когда очередь задач пуста.
+            //boost::asio::io_service::work w(io_context); // нужен для того, чтобы .run() не завершался когда очередь задач пуста.
             io_context.run();
         });
     }
@@ -50,7 +58,7 @@ void HttpServer::run(const boost::asio::ip::tcp& address, uint16_t port){
     }
 
     tp.join();
-    tp.stop();
+    //tp.stop();
 }
 
 void HttpServer::doAccept(ip::tcp::acceptor &acceptor) {
