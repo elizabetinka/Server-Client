@@ -9,17 +9,17 @@ class ItemRepositoryTests : public testing::Test {
 
 public:
     virtual ~ItemRepositoryTests() override {
-        ItemRepository.DeleteAll();
+        itemRepository.DeleteAll();
     }
 
 protected:
-    ItemRepository ItemRepository;
+    ItemRepository itemRepository;
 
     void addItems(){
-        ItemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
-        ItemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
-        ItemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
-        ItemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
+        itemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
+        itemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
+        itemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
+        itemRepository.Add(ItemInfo(Item("name", "description", Category::clothes), 10));
     }
 };
 
@@ -39,7 +39,7 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST_P(ItemRepositoryAddTestsValid, CItemRepositoryAddTestsValidTest) {
     auto const& Item = GetParam();
-    auto responce = ItemRepository.Add(Item);
+    auto responce = itemRepository.Add(Item);
     ASSERT_EQ(responce, true);
 }
 
@@ -62,7 +62,7 @@ TEST_P(ItemRepositoryAddTestsInvalid, ItemRepositoryAddTestsInvalidTest) {
     addItems();
     auto Item = GetParam();
     Item.item.id = 0;
-    auto responce = ItemRepository.Add(Item);
+    auto responce = itemRepository.Add(Item);
     ASSERT_EQ(responce, false);
 }
 
@@ -77,7 +77,7 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_P(ItemRepositoryDeleteTestsValid, CItemRepositoryDeleteTestsValidTest) {
     addItems();
     auto const& id = GetParam();
-    auto responce = ItemRepository.Delete(id);
+    auto responce = itemRepository.Delete(id);
     ASSERT_EQ(responce, true);
 }
 
@@ -93,7 +93,7 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_P(ItemRepositoryDeleteTestsInvalid, ItemRepositoryDeleteTestsInvalidTest) {
     addItems();
     auto const& id = GetParam();
-    auto responce = ItemRepository.Delete(id);
+    auto responce = itemRepository.Delete(id);
     ASSERT_EQ(responce, false);
 }
 
@@ -110,14 +110,14 @@ TEST_P(ItemRepositoryModifyTestsValid, ItemRepositoryModifyTestsValidTest) {
     auto const& id = GetParam();
     std::string expected_name = "Liza";
 
-    auto responce1 = ItemRepository.getById(id);
+    auto responce1 = itemRepository.getById(id);
     ASSERT_EQ(responce1.first, true);
     responce1.second.item.name = expected_name;
 
-    auto responce = ItemRepository.Modify(responce1.second);
+    auto responce = itemRepository.Modify(responce1.second);
     ASSERT_EQ(responce, true);
 
-    auto responce3 = ItemRepository.getById(id);
+    auto responce3 = itemRepository.getById(id);
     ASSERT_EQ(responce3.first, true);
     ASSERT_EQ(responce3.second.item.name, expected_name);
 }
@@ -136,14 +136,14 @@ TEST_P(ItemRepositoryModifyTestsInvalid, ItemRepositoryModifyTestsInvalidTest) {
     auto const& id = GetParam();
     std::string expected_name = "Liza";
 
-    auto responce1 = ItemRepository.getById(id);
+    auto responce1 = itemRepository.getById(id);
     ASSERT_EQ(responce1.first, false);
 
     responce1.second.item.name = expected_name;
-    auto responce = ItemRepository.Modify(responce1.second);
+    auto responce = itemRepository.Modify(responce1.second);
     ASSERT_EQ(responce, false);
 
-    auto responce3 = ItemRepository.getById(id);
+    auto responce3 = itemRepository.getById(id);
     ASSERT_EQ(responce3.first, false);
     ASSERT_NE(responce3.second.item.name, expected_name);
 }
@@ -161,7 +161,7 @@ TEST_P(ItemRepositoryGetByIdTestsValid, ItemRepositoryGetByIdTestValid) {
     addItems();
     auto const& id = GetParam();
 
-    auto responce1 = ItemRepository.getById(id);
+    auto responce1 = itemRepository.getById(id);
     ASSERT_EQ(responce1.first, true);
     ASSERT_EQ(responce1.second.item.id, id);
 }
@@ -178,32 +178,32 @@ TEST_P(ItemRepositoryGetByIdTestsInvalid, ItemRepositoryGetByIdTestInvalid) {
     addItems();
     auto const& id = GetParam();
 
-    auto responce1 = ItemRepository.getById(id);
+    auto responce1 = itemRepository.getById(id);
     ASSERT_EQ(responce1.first, false);
     ASSERT_EQ(responce1.second.item.id, undefId);
 }
 
 TEST_F(ItemRepositoryTests, ItemRepositoryGetAllTest) {
     addItems();
-    auto n = ItemRepository.getAll().size();
+    auto n = itemRepository.getAll().size();
     ASSERT_EQ(n,4);
 
-    ItemRepository.Add(ItemInfo(Item("name", "description", Category::unknown), 10));
+    itemRepository.Add(ItemInfo(Item("name", "description", Category::unknown), 10));
 
-    n = ItemRepository.getAll().size();
+    n = itemRepository.getAll().size();
     ASSERT_EQ(n,5);
 
-    ItemRepository.Delete(0);
+    itemRepository.Delete(0);
 
-    n = ItemRepository.getAll().size();
+    n = itemRepository.getAll().size();
     ASSERT_EQ(n,4);
 }
 
 TEST_F(ItemRepositoryTests, ItemRepositoryDeleteAllTest) {
     addItems();
-    auto n = ItemRepository.DeleteAll();
+    auto n = itemRepository.DeleteAll();
     ASSERT_EQ(n,4);
 
-    n = ItemRepository.getAll().size();
+    n = itemRepository.getAll().size();
     ASSERT_EQ(n,0);
 }
