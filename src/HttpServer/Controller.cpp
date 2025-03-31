@@ -94,7 +94,7 @@ http::response<http::string_body> Controller::getAllClients(std::shared_ptr<http
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = clientService.process(request);
+    auto responce = clientService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -115,7 +115,7 @@ http::response<http::string_body> Controller::getAllItems(const std::shared_ptr<
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = itemService.process(request);
+    auto responce = itemService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -137,7 +137,7 @@ http::response<http::string_body> Controller::addClient(const std::shared_ptr<ht
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = clientService.process(request);
+    auto responce = clientService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -165,7 +165,7 @@ http::response<http::string_body> Controller::addItem(const std::shared_ptr<http
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = itemService.process(request);
+    auto responce = itemService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -187,7 +187,7 @@ Controller::deleteClient(const std::shared_ptr<http::request<http::string_body>>
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = clientService.process(request);
+    auto responce = clientService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -208,7 +208,7 @@ http::response<http::string_body> Controller::deleteItem(const std::shared_ptr<h
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = itemService.process(request);
+    auto responce = itemService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -230,7 +230,7 @@ Controller::modifyClient(const std::shared_ptr<http::request<http::string_body>>
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = clientService.process(request);
+    auto responce = clientService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -251,7 +251,7 @@ http::response<http::string_body> Controller::modifyItem(const std::shared_ptr<h
         return getCallback(req,"Не удалось распознать входящий json");
     }
 
-    auto responce = itemService.process(request);
+    auto responce = itemService->process(request);
     nlohmann::json json_response(responce);
     http::response<http::string_body> res{http::status::ok, req->version()};
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -261,3 +261,7 @@ http::response<http::string_body> Controller::modifyItem(const std::shared_ptr<h
     res.prepare_payload();
     return res;
 }
+
+Controller::Controller(const std::shared_ptr<IClientService> &clientService2,
+                       const std::shared_ptr<IItemService> &itemService2) : clientService(std::move(clientService2)),
+                                                                                itemService(std::move(itemService2)) {}

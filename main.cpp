@@ -14,14 +14,16 @@
 #include "src/HttpServer/HttpServer.h"
 
 
-
 int main() {
     try {
         const ip::tcp address = ip::tcp::v4();
         unsigned short port = 8080;
 
         HttpServer server = HttpServer(4);
-        server.run(address,port);
+        std::thread server_thread([&server, address, port] () {server.run(address,port);});
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+        server.stop();
+        server_thread.join();
 
     } catch (const std::exception& e) {
         std::cerr << "Ошибка: " << e.what() << std::endl;

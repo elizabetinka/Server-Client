@@ -2,7 +2,7 @@
 // Created by e.kravchenkova on 27.03.2025.
 //
 
-#include "../src/Model/Repository/ClientRepository.h"
+#include "../../src/Model/Repository/ClientRepository.h"
 #include <gtest/gtest.h>
 
 class ClientRepositoryTests : public testing::Test {

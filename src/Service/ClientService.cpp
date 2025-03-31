@@ -18,23 +18,23 @@ ClientRegistrRes ClientService::process(ClientRegistrReq const& req){
         return {req.requestId,  false};
     }
     auto client = Client(req.nickname, timePair.second);
-    auto success = clientRepository.Add(client);
+    auto success = clientRepository->Add(client);
     return {req.requestId, success};
 }
 
 ClientGetALlRes ClientService::process(ClientGetALlReq const& req){
 
-    return {req.requestId,clientRepository.getAll()};
+    return {req.requestId,clientRepository->getAll()};
 }
 
 ClientDeleteRes ClientService::process(ClientDeleteReq const& req){
-    auto success = clientRepository.Delete(req.clientId);
+    auto success = clientRepository->Delete(req.clientId);
 //    clients_count--;
     return {req.requestId, success};
 }
 
 ClientDeleteAllRes ClientService::process(const ClientDeleteAllReq & req) {
-    return {req.requestId, clientRepository.DeleteAll()};
+    return {req.requestId, clientRepository->DeleteAll()};
 }
 
 ClientModifyRes ClientService::process(const ClientModifyReq & req) {
@@ -48,5 +48,7 @@ ClientModifyRes ClientService::process(const ClientModifyReq & req) {
     }
     Client client= Client(req.new_client.nickname, timePair.second);
     client.id = req.new_client.id;
-    return {req.requestId,clientRepository.Modify(client)};
+    return {req.requestId,clientRepository->Modify(client)};
 }
+
+ClientService::ClientService(std::shared_ptr<Repository<Client>> clientRepository2) : clientRepository(std::move(clientRepository2)) {}

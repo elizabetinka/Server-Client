@@ -3,9 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include "../src/Service/ClientService.h"
+#include "../../src/Service/ClientService.h"
 
-class ClientServiceTests : public testing::Test {
+class ClientIntegrationServiceTests : public testing::Test {
 
 protected:
     ClientService clientService;
@@ -18,32 +18,32 @@ protected:
     }
 
 public:
-    virtual ~ClientServiceTests() override {
+    virtual ~ClientIntegrationServiceTests() override {
         clientService.process(ClientDeleteAllReq{});
     }
 };
 
-class ServiceTestsClientServiceRequestId
-        : public ClientServiceTests, public ::testing::WithParamInterface<uint64_t>
+class ServiceIntegrationTestsClientServiceRequestId
+        : public ClientIntegrationServiceTests, public ::testing::WithParamInterface<uint64_t>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceRegistrationReqestId, ServiceTestsClientServiceRequestId,
+        ClientServiceIntegrationRegistrationReqestId, ServiceIntegrationTestsClientServiceRequestId,
         ::testing::Values(0,1,10,100,1000));
 
-TEST_P(ServiceTestsClientServiceRequestId, ClientServiceRegistrationReqestId) {
+TEST_P(ServiceIntegrationTestsClientServiceRequestId, ClientServiceIntegrationRegistrationReqestId) {
     auto const& id = GetParam();
     auto request = ClientRegistrReq{.requestId = id, .nickname = "name", .birthday = "07-05-2004"};
     auto responce = clientService.process(request);
     ASSERT_EQ(id,responce.responceId);
 }
 
-class ServiceTestsClientServiceRegistrationValid
-        : public  ClientServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string>>
+class ServiceIntegrationTestsClientServiceRegistrationValid
+        : public  ClientIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceRegistrationValid, ServiceTestsClientServiceRegistrationValid,
+        ClientServiceIntegrationRegistrationValid, ServiceIntegrationTestsClientServiceRegistrationValid,
         ::testing::Values(
                 std::make_tuple("Liza", "07-05-2004"),
                 std::make_tuple("Лиза", "07-05-2004"),
@@ -51,19 +51,19 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple("Makar", "04-05-1070")
                 ));
 
-TEST_P(ServiceTestsClientServiceRegistrationValid, ClientServiceRegistrationValid) {
+TEST_P(ServiceIntegrationTestsClientServiceRegistrationValid, ClientServiceIntegrationRegistrationValid) {
     auto const& [name, birthday] = GetParam();
     auto request = ClientRegistrReq{.requestId = 0, .nickname = name, .birthday = birthday};
     auto responce = clientService.process(request);
     ASSERT_EQ(responce.success, true);
 }
 
-class ServiceTestsClientServiceRegistrationInvalid
-        : public  ClientServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string>>
+class ServiceIntegrationTestsClientServiceRegistrationInvalid
+        : public  ClientIntegrationServiceTests, public ::testing::WithParamInterface<std::tuple<std::string, std::string>>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceRegistrationInvalid, ServiceTestsClientServiceRegistrationInvalid,
+        ClientServiceIntegrationRegistrationInvalid, ServiceIntegrationTestsClientServiceRegistrationInvalid,
         ::testing::Values(
                 std::make_tuple("Liza", "07-24-2004"),
                 std::make_tuple("Liza", "2004-07-05"),
@@ -75,7 +75,7 @@ INSTANTIATE_TEST_SUITE_P(
                 std::make_tuple("     ", " ")
         ));
 
-TEST_P(ServiceTestsClientServiceRegistrationInvalid, ClientServiceRegistrationInvalid) {
+TEST_P(ServiceIntegrationTestsClientServiceRegistrationInvalid, ClientServiceIntegrationRegistrationInvalid) {
     auto const& [name, birthday] = GetParam();
     auto request = ClientRegistrReq{.requestId = 0, .nickname = name, .birthday = birthday};
     auto response = clientService.process(request);
@@ -84,25 +84,25 @@ TEST_P(ServiceTestsClientServiceRegistrationInvalid, ClientServiceRegistrationIn
 
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceDeleteReqestId, ServiceTestsClientServiceRequestId,
+        ClientServiceIntegrationDeleteReqestId, ServiceIntegrationTestsClientServiceRequestId,
         ::testing::Values(0,1,10,100,1000));
 
-TEST_P(ServiceTestsClientServiceRequestId, ClientServiceDeleteReqestId) {
+TEST_P(ServiceIntegrationTestsClientServiceRequestId, ClientServiceIntegrationDeleteReqestId) {
     auto const& id = GetParam();
     auto request = ClientDeleteReq{.requestId = id, .clientId = 0};
     auto responce = clientService.process(request);
     ASSERT_EQ(id,responce.responceId);
 }
 
-class ServiceTestsClientServiceDeleteValid
-        : public  ClientServiceTests, public ::testing::WithParamInterface<uint64_t >
+class ServiceIntegrationTestsClientServiceDeleteValid
+        : public  ClientIntegrationServiceTests, public ::testing::WithParamInterface<uint64_t >
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceDeleteValid, ServiceTestsClientServiceDeleteValid,
+        ClientServiceIntegrationDeleteValid, ServiceIntegrationTestsClientServiceDeleteValid,
         ::testing::Values(0,1,2,3));
 
-TEST_P(ServiceTestsClientServiceDeleteValid, ClientServiceDeleteValid) {
+TEST_P(ServiceIntegrationTestsClientServiceDeleteValid, ClientServiceIntegrationDeleteValid) {
     addClients();
     auto const& id = GetParam();
     auto request = ClientDeleteReq{.requestId = 0, .clientId = id};
@@ -110,15 +110,15 @@ TEST_P(ServiceTestsClientServiceDeleteValid, ClientServiceDeleteValid) {
     ASSERT_EQ(responce.success, true);
 }
 
-class ServiceTestsClientServiceDeleteInvalid
-        : public  ClientServiceTests, public ::testing::WithParamInterface<uint64_t>
+class ServiceIntegrationTestsClientServiceDeleteInvalid
+        : public  ClientIntegrationServiceTests, public ::testing::WithParamInterface<uint64_t>
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceDeleteInvalid, ServiceTestsClientServiceDeleteInvalid,
+        ClientServiceIntegrationDeleteInvalid, ServiceIntegrationTestsClientServiceDeleteInvalid,
         ::testing::Values(4,5,6,7));
 
-TEST_P(ServiceTestsClientServiceDeleteInvalid, ClientServiceDeleteInvalid) {
+TEST_P(ServiceIntegrationTestsClientServiceDeleteInvalid, ClientServiceIntegrationDeleteInvalid) {
     addClients();
     auto const& id = GetParam();
     auto request = ClientDeleteReq{.requestId = 0, .clientId = id};
@@ -126,15 +126,15 @@ TEST_P(ServiceTestsClientServiceDeleteInvalid, ClientServiceDeleteInvalid) {
     ASSERT_EQ(responce.success, false);
 }
 
-class ServiceTestsClientServiceDeleteChangeLenValid
-        : public  ClientServiceTests, public ::testing::WithParamInterface<uint64_t >
+class ServiceIntegrationTestsClientServiceDeleteChangeLenValid
+        : public  ClientIntegrationServiceTests, public ::testing::WithParamInterface<uint64_t >
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceDeleteChangeLenValid, ServiceTestsClientServiceDeleteChangeLenValid,
+        ClientServiceIntegrationDeleteChangeLenValid, ServiceIntegrationTestsClientServiceDeleteChangeLenValid,
         ::testing::Values(0,1,2,3));
 
-TEST_P(ServiceTestsClientServiceDeleteChangeLenValid, ClientServiceDeleteChangeLenValid) {
+TEST_P(ServiceIntegrationTestsClientServiceDeleteChangeLenValid, ClientServiceIntegrationDeleteChangeLenValid) {
     addClients();
     auto const& id = GetParam();
     auto n1 = clientService.process(ClientGetALlReq{.requestId = 0}).clients.size();
@@ -144,15 +144,15 @@ TEST_P(ServiceTestsClientServiceDeleteChangeLenValid, ClientServiceDeleteChangeL
     ASSERT_EQ(n2, n1-1);
 }
 
-class ServiceTestsClientServiceDeleteChangeLenInvalid
-        : public  ClientServiceTests, public ::testing::WithParamInterface<uint64_t >
+class ServiceIntegrationTestsClientServiceDeleteChangeLenInvalid
+        : public  ClientIntegrationServiceTests, public ::testing::WithParamInterface<uint64_t >
 {};
 
 INSTANTIATE_TEST_SUITE_P(
-        ClientServiceDeleteChangeLenInvalid, ServiceTestsClientServiceDeleteChangeLenInvalid,
+        ClientIntegrationServiceDeleteChangeLenInvalid, ServiceIntegrationTestsClientServiceDeleteChangeLenInvalid,
         ::testing::Values(4,5,6,7));
 
-TEST_P(ServiceTestsClientServiceDeleteChangeLenInvalid, ClientServiceDeleteChangeLenInvalid) {
+TEST_P(ServiceIntegrationTestsClientServiceDeleteChangeLenInvalid, ClientIntegrationServiceDeleteChangeLenInvalid) {
     addClients();
     auto const& id = GetParam();
     auto n1 = clientService.process(ClientGetALlReq{.requestId = 0}).clients.size();
@@ -162,13 +162,13 @@ TEST_P(ServiceTestsClientServiceDeleteChangeLenInvalid, ClientServiceDeleteChang
     ASSERT_EQ(n2, n1);
 }
 
-TEST_F( ClientServiceTests, GetAllTest) {
+TEST_F( ClientIntegrationServiceTests, GetAllTest) {
     addClients();
     auto n = clientService.process(ClientGetALlReq{.requestId = 0}).clients.size();
     ASSERT_EQ(n, 4);
 }
 
-TEST_F( ClientServiceTests, GetAllTestWithAdding) {
+TEST_F( ClientIntegrationServiceTests, GetAllTestWithAdding) {
     addClients();
     auto n1 = clientService.process(ClientGetALlReq{.requestId = 0}).clients.size();
     clientService.process(ClientRegistrReq{.requestId = 0, .nickname = "a", .birthday = "07-05-2004"});

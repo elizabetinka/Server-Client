@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 
-class ClientRepository : Repository<Client> {
+class ClientRepository : public Repository<Client> {
 public:
     bool Add(const Client& model) override;
     bool Delete(uint64_t id) override;

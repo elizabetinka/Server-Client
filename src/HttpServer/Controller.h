@@ -11,9 +11,14 @@
 namespace http = boost::beast::http;
 
 class Controller {
-    ClientService clientService;
-    ItemService itemService;
+    std::shared_ptr<IClientService> clientService = std::make_shared<ClientService>();
+    std::shared_ptr<IItemService> itemService = std::make_shared<ItemService>();
+
 public:
+    Controller(const std::shared_ptr<IClientService> &clientService,
+               const std::shared_ptr<IItemService> &itemService);
+    Controller() = default;
+
     http::response<http::string_body> handleRequest(
             std::shared_ptr<http::request<http::string_body>> const& req);
 

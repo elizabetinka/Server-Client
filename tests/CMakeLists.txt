@@ -15,15 +15,23 @@ enable_testing()
 
 add_executable(
         ${PROJECT_NAME}
-        ClientServiceTests.cpp
-        ItemServiceTests.cpp
-        ClientRepositoryTests.cpp
-        ItemRepositoryTests.cpp
+        mock/MockClientRepository.h
+        mock/MockItemRepository.h
+        mock/MockClientService.h
+        mock/MockItemService.h
+        integration/ItemIntegrationServiceTests.cpp
+        integration/ClientIntegrationServiceTests.cpp
+        ut/ClientRepositoryTests.cpp
+        ut/ItemRepositoryTests.cpp
+        ut/ClientServiceTests.cpp
+        ut/ItemServiceTests.cpp
+        ut/HttpServerTests.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
-        BusinessLayer
+        PresentationLayerHttpServer
         GTest::gtest_main
+        gmock_main
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})

@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 
-class ItemRepository : Repository<ItemInfo> {
+class ItemRepository : public Repository<ItemInfo> {
 public:
     bool Add(const ItemInfo& model) override;
     bool Delete(uint64_t id) override;
