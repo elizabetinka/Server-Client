@@ -15,7 +15,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientGetALlReq, requestId)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientGetALlRes, responceId, clients)
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientRegistrReq, requestId, nickname, birthday)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientRegistrRes, responceId, success)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientRegistrRes, responceId,id, success)
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientDeleteReq, requestId, clientId)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ClientDeleteRes, responceId, success)
@@ -34,7 +34,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Item, id, name, description,category)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ItemInfo, item, count)
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AddItemReq, requestId,name,description,count, category)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AddItemRes, responceId, success)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AddItemRes, responceId, id, success)
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeleteItemReq, requestId,itemId,count)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DeleteItemRes, responceId, success, item, bought_count)

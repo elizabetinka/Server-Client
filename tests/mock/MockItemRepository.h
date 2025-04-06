@@ -9,7 +9,7 @@
 
 class MockItemRepository : public Repository<ItemInfo> {
 public:
-    MOCK_METHOD(bool, Add,(const ItemInfo&), (override));
+    MOCK_METHOD((std::pair<bool,uint64_t>), Add,(const ItemInfo&), (override));
     MOCK_METHOD(bool, Delete,(uint64_t id), (override));
     MOCK_METHOD(bool, Modify,(const ItemInfo& model), (override));
     MOCK_METHOD(std::vector<ItemInfo>, getAll,(), (override));

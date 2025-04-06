@@ -11,8 +11,8 @@ AddItemRes ItemService::process(AddItemReq const& req){
     }
 
     auto item = Item(req.name, req.description, req.category);
-    bool success = itemRepository->Add(ItemInfo(item, req.count));
-    return {req.requestId,  success};
+    auto status = itemRepository->Add(ItemInfo(item, req.count));
+    return {req.requestId,  status.second,status.first};
 }
 
 DeleteItemRes ItemService::process(DeleteItemReq const& req){

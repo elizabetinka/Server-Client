@@ -9,7 +9,7 @@
 
 class MockClientRepository : public Repository<Client> {
 public:
-    MOCK_METHOD(bool, Add,(const Client&), (override));
+    MOCK_METHOD((std::pair<bool,uint64_t>), Add,(const Client&), (override));
     MOCK_METHOD(bool, Delete,(uint64_t id), (override));
     MOCK_METHOD(bool, Modify,(const Client& model), (override));
     MOCK_METHOD(std::vector<Client>, getAll,(), (override));

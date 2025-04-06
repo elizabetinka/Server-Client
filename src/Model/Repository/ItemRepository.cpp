@@ -6,15 +6,15 @@
 
 uint64_t ItemRepository::last_id = 0;
 
-bool ItemRepository::Add(const ItemInfo& model) {
+std::pair<bool,uint64_t> ItemRepository::Add(const ItemInfo& model) {
     if (items.contains(model.item.id)){
-        return false;
+        return std::make_pair(false,undefId);
     }
     uint64_t newId = last_id;
     last_id++;
     items[newId] = model;
     items[newId].item.id = newId;
-    return true;
+    return std::make_pair(true,newId);
 }
 bool ItemRepository::Delete(uint64_t id) {
     if (!items.contains(id)){
