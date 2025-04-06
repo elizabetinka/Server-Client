@@ -11,7 +11,7 @@
 
 class ClientRepository : public Repository<Client> {
 public:
-    bool Add(const Client& model) override;
+    std::pair<bool,uint64_t> Add(const Client& model) override;
     bool Delete(uint64_t id) override;
     bool Modify(const Client& model) override;
     std::vector<Client> getAll() override;

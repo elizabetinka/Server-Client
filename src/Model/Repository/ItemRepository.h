@@ -11,7 +11,7 @@
 
 class ItemRepository : public Repository<ItemInfo> {
 public:
-    bool Add(const ItemInfo& model) override;
+    std::pair<bool,uint64_t> Add(const ItemInfo& model) override;
     bool Delete(uint64_t id) override;
     bool Modify(const ItemInfo& model) override;
     std::vector<ItemInfo> getAll() override;

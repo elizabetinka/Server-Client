@@ -6,15 +6,15 @@
 
 uint64_t ClientRepository::last_id = 0;
 
-bool ClientRepository::Add(const Client& model) {
+std::pair<bool,uint64_t> ClientRepository::Add(const Client& model) {
     if (clients.contains(model.id)){
-        return false;
+        return std::pair<bool,uint64_t>(false,undefId);
     }
     uint64_t newId = last_id;
     last_id++;
     clients[newId] = model;
     clients[newId].id = newId;
-    return true;
+    return std::make_pair(true,newId);
 }
 bool ClientRepository::Delete(uint64_t id) {
     if (!clients.contains(id)){

@@ -40,7 +40,7 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_P(ItemRepositoryAddTestsValid, CItemRepositoryAddTestsValidTest) {
     auto const& Item = GetParam();
     auto responce = itemRepository.Add(Item);
-    ASSERT_EQ(responce, true);
+    ASSERT_EQ(responce.first, true);
 }
 
 
@@ -63,7 +63,7 @@ TEST_P(ItemRepositoryAddTestsInvalid, ItemRepositoryAddTestsInvalidTest) {
     auto Item = GetParam();
     Item.item.id = 0;
     auto responce = itemRepository.Add(Item);
-    ASSERT_EQ(responce, false);
+    ASSERT_EQ(responce.first, false);
 }
 
 class ItemRepositoryDeleteTestsValid

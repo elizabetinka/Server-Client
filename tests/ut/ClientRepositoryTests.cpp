@@ -39,7 +39,7 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_P(ClientRepositoryAddTestsValid, CClientRepositoryAddTestsValidTest) {
     auto const& client = GetParam();
     auto responce = clientRepository.Add(client);
-    ASSERT_EQ(responce, true);
+    ASSERT_EQ(responce.first, true);
 }
 
 
@@ -61,7 +61,7 @@ TEST_P(ClientRepositoryAddTestsInvalid, ClientRepositoryAddTestsInvalidTest) {
     auto client = GetParam();
     client.id = 0;
     auto responce = clientRepository.Add(client);
-    ASSERT_EQ(responce, false);
+    ASSERT_EQ(responce.first, false);
 }
 
 class ClientRepositoryDeleteTestsValid

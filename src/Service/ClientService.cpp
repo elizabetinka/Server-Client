@@ -18,8 +18,8 @@ ClientRegistrRes ClientService::process(ClientRegistrReq const& req){
         return {req.requestId,  false};
     }
     auto client = Client(req.nickname, timePair.second);
-    auto success = clientRepository->Add(client);
-    return {req.requestId, success};
+    auto status = clientRepository->Add(client);
+    return {req.requestId, status.second,status.first};
 }
 
 ClientGetALlRes ClientService::process(ClientGetALlReq const& req){

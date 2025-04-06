@@ -21,7 +21,7 @@ int main() {
 
         HttpServer server = HttpServer(4);
         std::thread server_thread([&server, address, port] () {server.run(address,port);});
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        //std::this_thread::sleep_for(std::chrono::seconds(1000));
         server.stop();
         server_thread.join();
 

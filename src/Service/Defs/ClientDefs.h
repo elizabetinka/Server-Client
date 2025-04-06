@@ -26,11 +26,13 @@ struct ClientRegistrRes : Response
 {
     uint64_t responceId;
     bool success;
+    uint64_t id;
     std::string getResultStr() const override{
         return std::format("responce id: {} result of client registration status: {}", responceId, success);
     }
 
     ClientRegistrRes(uint64_t responceId, bool success) : responceId(responceId),  success(success) {}
+    ClientRegistrRes(uint64_t responceId,uint64_t id,bool success) : responceId(responceId), id(id), success(success) {}
 };
 
 struct ClientDeleteReq
