@@ -33,3 +33,9 @@ jobs:
           name: my-executable
           path: build/Release/server.exe
 
+      - name: download EXE artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: my-executable
+          path: ./downloaded
+
