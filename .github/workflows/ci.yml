@@ -1,41 +1,73 @@
-name: C++ Google Tests CI
+name: C++ CI/CD
 
 on:
   push:
     branches: ["**"]
+    tags:
+      - "v*"
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-      # 1. Клонирование репозитория
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Установка CMake и компилятора (если нужно)
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake g++
+      - name: Configure CMake
+        run: cmake -S . -B build
 
-      # 3. Сборка проекта
-      - name: Build project
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Run tests
+        working-directory: build
+        run: ctest --output-on-failure -C Release
+
+      # ---------- Linux ----------
+      - name: Package Linux
+        if: runner.os == 'Linux'
         run: |
-          mkdir build
-          cd build
-          cmake ..
-          make
+          mkdir package
+          find build -maxdepth 1 -type f -executable -exec cp {} package/ \;
+          zip -r Server-Client-linux.zip package
 
-      # 4. Запуск тестов
-      - name: Run Google Tests
+      # ---------- macOS ----------
+      - name: Package macOS
+        if: runner.os == 'macOS'
         run: |
-          cd build
-          ctest --output-on-failure
+          mkdir package
+          find build -maxdepth 1 -type f -perm -111 -exec cp {} package/ \;
+          zip -r Server-Client-macos.zip package
 
-      - name: Upload build artifacts
+      # ---------- Windows ----------
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item package -ItemType Directory
+          Get-ChildItem build -Filter *.exe | Copy-Item -Destination package
+          Compress-Archive package Server-Client-windows.zip
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: server-build
+          name: binaries-${{ runner.os }}
           path: |
-            build/Server
-          if-no-files-found: ignore
+            *.zip
+
+      - name: Upload Release Assets
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.zip
