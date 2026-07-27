@@ -1,0 +1,345 @@
+openapi: 3.0.3
+
+info:
+  title: Server-Client REST API
+  version: 1.0.0
+  description: |
+    REST API сервера управления клиентами и товарами.
+
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Clients
+  - name: Items
+
+paths:
+
+  /api/client:
+    get:
+      tags: [Clients]
+      summary: Получить список клиентов
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientGetAllRequest'
+      responses:
+        "200":
+          description: Список клиентов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientGetAllResponse'
+
+    post:
+      tags: [Clients]
+      summary: Зарегистрировать клиента
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRegistrationRequest'
+      responses:
+        "200":
+          description: Клиент зарегистрирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientRegistrationResponse'
+
+    delete:
+      tags: [Clients]
+      summary: Удалить клиента
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDeleteRequest'
+      responses:
+        "200":
+          description: Клиент удален
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDeleteResponse'
+    put:
+      tags: [Clients]
+      summary: Изменить данные клиента
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientModifyRequest'
+      responses:
+        "200":
+          description: Данные клиента успешно изменены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientModifyResponse'
+
+  /api/item:
+
+    get:
+      tags: [Items]
+      summary: Получить список товаров
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetAllItemsRequest'
+      responses:
+        "200":
+          description: Список товаров
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllItemsResponse'
+
+    post:
+      tags: [Items]
+      summary: Добавить товар
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+      responses:
+        "200":
+          description: Товар добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddItemResponse'
+
+    delete:
+      tags: [Items]
+      summary: Купить или удалить товар
+      description: |
+        Если count > 0 — уменьшается количество товара.
+        Если count == 0 — товар удаляется полностью.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteItemRequest'
+      responses:
+        "200":
+          description: Операция выполнена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteItemResponse'
+
+    put:
+      tags: [Items]
+      summary: Изменить информацию о товаре
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemModifyRequest'
+      responses:
+        "200":
+          description: Информация о товаре успешно изменена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemModifyResponse'
+
+components:
+
+  schemas:
+
+    Category:
+      type: string
+      enum:
+        - beauty
+        - technic
+        - clothes
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        nickname:
+          type: string
+        birthday:
+          type: string
+
+    ClientGetAllRequest:
+      type: object
+      required: [requestId]
+      properties:
+        requestId:
+          type: integer
+
+    ClientGetAllResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+
+    ClientRegistrationRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+        nickname:
+          type: string
+        birthday:
+          type: string
+
+    ClientRegistrationResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        id:
+          type: integer
+        success:
+          type: boolean
+
+    ClientDeleteRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+        clientId:
+          type: integer
+
+    ClientDeleteResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        success:
+          type: boolean
+
+    ClientModifyRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+        client:
+          $ref: '#/components/schemas/Client'
+
+    ClientModifyResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        success:
+          type: boolean
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          $ref: '#/components/schemas/Category'
+
+    ItemInfo:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/Item'
+        count:
+          type: integer
+
+    GetAllItemsRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+
+    GetAllItemsResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemInfo'
+
+    AddItemRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        count:
+          type: integer
+        category:
+          $ref: '#/components/schemas/Category'
+
+    AddItemResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        id:
+          type: integer
+        success:
+          type: boolean
+
+    DeleteItemRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+        itemId:
+          type: integer
+        count:
+          type: integer
+
+    DeleteItemResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        success:
+          type: boolean
+        item:
+          $ref: '#/components/schemas/Item'
+        bought_count:
+          type: integer
+
+    ItemModifyRequest:
+      type: object
+      properties:
+        requestId:
+          type: integer
+        new_item:
+          $ref: '#/components/schemas/ItemInfo'
+
+    ItemModifyResponse:
+      type: object
+      properties:
+        responceId:
+          type: integer
+        success:
+          type: boolean

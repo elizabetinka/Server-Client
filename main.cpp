@@ -22,8 +22,13 @@ int main() {
         HttpServer server = HttpServer(4);
         std::thread server_thread([&server, address, port] () {server.run(address,port);});
         //std::this_thread::sleep_for(std::chrono::seconds(1000));
-        server.stop();
-        server_thread.join();
+        // server.stop();
+        // server_thread.join();
+
+        std::cout << "Сервер работает. Нажмите Ctrl+C, чтобы остановить." << std::endl;
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(100));
+        }
 
     } catch (const std::exception& e) {
         std::cerr << "Ошибка: " << e.what() << std::endl;

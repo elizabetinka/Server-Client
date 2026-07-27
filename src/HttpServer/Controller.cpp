@@ -26,6 +26,12 @@ http::response<http::string_body> Controller::handleRequest(
         } else if (req->target() == "/api/item") {
             return deleteItem(req);
         }
+    } else if (req->method() == http::verb::put) {
+        if (req->target() == "/api/client") {
+            return modifyClient(req);
+        } else if (req->target() == "/api/item") {
+            return modifyItem(req);
+        }
     }
     return getCallback(req, "Неизвестный путь");
 }

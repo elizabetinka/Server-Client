@@ -31,3 +31,11 @@ jobs:
         run: |
           cd build
           ctest --output-on-failure
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-build
+          path: |
+            build/Server
+          if-no-files-found: ignore
