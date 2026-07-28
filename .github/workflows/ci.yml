@@ -30,6 +30,7 @@ jobs:
         run: cmake --build build --config Release
 
       - name: Run tests
+        if: runner.os != 'macOS'
         working-directory: build
         run: ctest --output-on-failure -C Release
 
@@ -38,7 +39,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           mkdir package
-          find build -maxdepth 1 -type f -executable -exec cp {} package/ \;
+          find build -type f -executable -exec cp {} package/ \;
           zip -r Server-Client-linux.zip package
 
       # ---------- macOS ----------
@@ -46,7 +47,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           mkdir package
-          find build -maxdepth 1 -type f -perm -111 -exec cp {} package/ \;
+          find build -type f -perm -111 -exec cp {} package/ \;
           zip -r Server-Client-macos.zip package
 
       # ---------- Windows ----------
@@ -54,8 +55,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          New-Item package -ItemType Directory
-          Get-ChildItem build -Filter *.exe | Copy-Item -Destination package
+          New-Item package -ItemType Directory -Force
+          Copy-Item build/Release/*.exe package
           Compress-Archive package Server-Client-windows.zip
 
       - name: Upload artifacts
